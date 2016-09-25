@@ -14,7 +14,7 @@ class AddLocationForm(BoxLayout):
 		request = UrlRequest(search_url, self.found_location)
 
 	def found_location(self, request, data):
-		cities = ["{} ({})".format(d['name'], d['sys']['country']) for d in data['list']]
+		cities = ["{} ({}) Temp: {}".format(d['name'], d['sys']['country'], d['main']['temp']) for d in data['list']]
 		self.search_results.item_strings = cities	
 		self.search_results.adapter.data.clear()
 		self.search_results.adapter.data.extend(cities)
@@ -27,6 +27,7 @@ class WeatherApp(App):
 	pass
 
 class WeatherRoot(BoxLayout):
+	location_form = ObjectProperty()
 	def show_current_weather(self, location):
 		self.clear_widgets()
 		current_weather = Factory.CurrentWeather()
@@ -35,7 +36,7 @@ class WeatherRoot(BoxLayout):
 	
 	def show_location_form(self):
 		self.clear_widgets()
-		self.add_widget(AddLocationForm())
+		self.add_widget(self.location_form)
 
 	
 if __name__ == '__main__':
