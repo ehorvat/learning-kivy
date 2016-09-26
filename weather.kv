@@ -11,8 +11,6 @@ WeatherRoot:
 <AddLocationForm>:
 	orientation: "vertical"
 	search_input: search_box
-	long_input: long_box
-	lat_input: lat_box
 	search_results: search_results_list
 	BoxLayout:
 		height: "40dp"
@@ -23,14 +21,7 @@ WeatherRoot:
 			hint_text: "City"
 			multiline: False
 			on_text_validate: root.search_location()
-		TextInput:
-			id: long_box
-			size_hint_x: 25
-			hint_text: "Longitude"
-		TextInput:
-			id: lat_box
-			size_hint_x: 25
-			hint_text: "Latitude"
+			focus: True
 		Button:
 			text: "Serach"
 			size_hint_x: 25
@@ -41,22 +32,38 @@ WeatherRoot:
 	ListView:
 		id: search_results_list
 		adapter:
-			ListAdapter(data=[], cls=main.LocationButton)
+			ListAdapter(data=[], cls=main.LocationButton, args_converter=root.args_converter)
+	Button:
+		height: "40dp"
+		size_hint_y: None
+		text: "Cancel"
+		on_press: app.root.show_current_weather(None)
 
 <LocationButton>:
-	on_press: app.root.show_current_weather(self.text)
+	on_press: app.root.show_current_weather(self.location)
 	selected_color: 0,0,1,1
 	deselected_color: .7,.8,.91,1
+	height: "40dp"
+	size_hint_y: None
+	text: "{} ({})".format(self.location[0], self.location[1])
 
-<CurrentWeather@BoxLayout>:
-	location: ""
-	conditions: None
-	temp: None
-	temp_min: None
-	temp_max: None
+<CurrentWeather>: 
 	orientation: "vertical"
+	BoxLayout:
+		Label:
+			text: "{} ({})".format(root.location[0], root.location[1])
+			font_size: "30dp"
+		Label:
+			text: "{}".format(root.temp)
+			font_size: "30dp"
 	Label:
-		text: root.location
+		text: root.conditions
+	BoxLayout:
+		orientation: "horizontal"
+		Label:
+			text: "Low: {}".format(root.temp_min)
+		Label:
+			text: "High: {}".format(root.temp_max)	
 	BoxLayout:
 		orientation: "horizontal"
 		size_hint_y: None
